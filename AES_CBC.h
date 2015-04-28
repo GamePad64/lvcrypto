@@ -19,17 +19,12 @@
 namespace crypto {
 
 class AES_CBC : public TwoWayTransformer {
-public:
-	using IV = std::array<uint8_t, 16>;
-	using Key16 = std::array<uint8_t, 16>;
-	using Key24 = std::array<uint8_t, 24>;
-	using Key32 = std::array<uint8_t, 32>;
 private:
 	BinaryArray key;
-	IV iv;
+	BinaryArray iv;
 	bool padding;
 public:
-	AES_CBC(BinaryArray key, IV iv, bool padding = true) : key(std::move(key)), iv(std::move(iv)), padding(padding) {}
+	AES_CBC(BinaryArray key, BinaryArray iv, bool padding = true) : key(std::move(key)), iv(std::move(iv)), padding(padding) {}
 	virtual ~AES_CBC() {};
 
 	BinaryArray encrypt(const BinaryArray& plaintext) const;

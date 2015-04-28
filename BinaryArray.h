@@ -18,6 +18,8 @@
 #include <cassert>
 #include <vector>
 #include <string>
+#include <array>
+#include <cstdint>
 
 namespace crypto {
 
@@ -53,15 +55,19 @@ public:
 
 	BinaryArray& operator =(std::vector<uint8_t> value){
 		internal_value = std::move(value);
-		return internal_value;
+		return *this;
 	}
 	template<size_t array_size> BinaryArray& operator =(std::array<uint8_t, array_size> value){
 		internal_value.assign(std::make_move_iterator(value.begin()), std::make_move_iterator(value.end()));
-		return internal_value;
+		return *this;
 	}
 	BinaryArray& operator =(std::string value){
 		internal_value.assign(std::make_move_iterator(value.begin()), std::make_move_iterator(value.end()));
-		return internal_value;
+		return *this;
+	}
+
+	bool operator ==(const BinaryArray& value) const{
+		return internal_value == value.internal_value;
 	}
 
 	operator bool(){
@@ -79,11 +85,9 @@ public:
 		std::copy(internal_value.begin(), internal_value.begin()+std::min(internal_value.size(), array_size), &*array.begin());
 		return array;
 	}
-	operator std::vector<std::string>() const {
+	operator std::string() const {
 		return std::string(internal_value.begin(), internal_value.end());
 	}
-
-	BinaryArray to(OneWayTransformer transform){return transform.to(internal_value);}
 
 	uint8_t* data(){return internal_value.data();}
 	const uint8_t* data() const {return internal_value.data();}

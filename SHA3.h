@@ -15,6 +15,7 @@
  */
 #pragma once
 #include "Transformer.h"
+#include <cryptopp/sha3.h>
 
 namespace crypto {
 

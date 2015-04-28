@@ -36,8 +36,8 @@ public:
 class De : public TwoWayTransformer {
 	std::unique_ptr<TwoWayTransformer> nested;
 public:
-	De(TwoWayTransformer&& transformer){
-		nested = new TwoWayTransformer();
+	De(TwoWayTransformer& transformer){
+		nested = std::unique_ptr<TwoWayTransformer>(new TwoWayTransformer());
 		std::swap(*nested, transformer);
 	}
 
