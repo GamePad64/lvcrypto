@@ -14,28 +14,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-#include <cryptopp/eccrypto.h>
-#include <cryptopp/oids.h>
-#include <cryptopp/asn.h>
+#include "Transformer.h"
 
 namespace crypto {
 
-class ECDH {
-	struct KeyPair {
-		BinaryArray public_key;
-		BinaryArray private_key;
-	} key_pair;
-
-	CryptoPP::ECDH<CryptoPP::ECP>::Domain crypto_domain;
-	CryptoPP::AutoSeededRandomPool rng;
+class SHA3 : public OneWayTransformer {
+	const size_t size;
+	CryptoPP::SHA3 hasher;
 public:
-	ECDH(CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(BinaryArray private_key, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(KeyPair key_pair, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	virtual ~ECDH();
+	SHA3(size_t size) : size(size), hasher(size) {}
+	virtual ~SHA3() {}
 
-	KeyPair get_KeyPair() const {return key_pair;}
-	BinaryArray agree(const BinaryArray& other_public_key);
+	BinaryArray compute(const BinaryArray& data){
+		BinaryArray result(32/8);
+		hasher.CalculateDigest(result.data(), data.data(), data.size());
+		return result;
+	}
+	BinaryArray to(const BinaryArray& data){
+		BinaryArray result(32/8);
+		hasher.CalculateDigest(result.data(), data.data(), data.size());
+		return result;
+	}
 };
 
 } /* namespace crypto */

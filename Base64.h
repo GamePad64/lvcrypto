@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Alexander Shishenko <GamePad64@gmail.com>
+/* Copyright (C) 2014-2015 Alexander Shishenko <GamePad64@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,28 +14,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-#include <cryptopp/eccrypto.h>
-#include <cryptopp/oids.h>
-#include <cryptopp/asn.h>
+#include "Transformer.h"
+#include <cryptopp/base64.h>
 
 namespace crypto {
 
-class ECDH {
-	struct KeyPair {
-		BinaryArray public_key;
-		BinaryArray private_key;
-	} key_pair;
-
-	CryptoPP::ECDH<CryptoPP::ECP>::Domain crypto_domain;
-	CryptoPP::AutoSeededRandomPool rng;
+class Base64 : public TwoWayTransformer {
 public:
-	ECDH(CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(BinaryArray private_key, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(KeyPair key_pair, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	virtual ~ECDH();
+	BinaryArray to(const BinaryArray& data) {
+		std::string transformed;
+		CryptoPP::StringSource(data, true,
+				new CryptoPP::Base64Encoder(
+						new CryptoPP::StringSink(transformed)
+				)
+		);
 
-	KeyPair get_KeyPair() const {return key_pair;}
-	BinaryArray agree(const BinaryArray& other_public_key);
+		return transformed;
+	}
+
+	BinaryArray from(const BinaryArray& data) {
+		std::string transformed;
+		CryptoPP::StringSource(data, true,
+				new CryptoPP::Base64Decoder(
+						new CryptoPP::StringSink(transformed)
+				)
+		);
+
+		return transformed;
+	}
 };
 
 } /* namespace crypto */

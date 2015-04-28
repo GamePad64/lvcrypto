@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Alexander Shishenko <GamePad64@gmail.com>
+/* Copyright (C) 2014-2015 Alexander Shishenko <GamePad64@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,28 +14,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-#include <cryptopp/eccrypto.h>
-#include <cryptopp/oids.h>
-#include <cryptopp/asn.h>
+#include "Transformer.h"
+#include <cryptopp/crc.h>
+#include <cstdint>
+#include <string>
 
 namespace crypto {
 
-class ECDH {
-	struct KeyPair {
-		BinaryArray public_key;
-		BinaryArray private_key;
-	} key_pair;
-
-	CryptoPP::ECDH<CryptoPP::ECP>::Domain crypto_domain;
-	CryptoPP::AutoSeededRandomPool rng;
+class CRC32 : public OneWayTransformer {
+	CryptoPP::CRC32 hasher;
 public:
-	ECDH(CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(BinaryArray private_key, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(KeyPair key_pair, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	virtual ~ECDH();
+	virtual ~CRC32() {}
 
-	KeyPair get_KeyPair() const {return key_pair;}
-	BinaryArray agree(const BinaryArray& other_public_key);
+	uint32_t compute(const BinaryArray& data){
+		uint32_t crc32;
+		hasher.CalculateDigest(reinterpret_cast<uint8_t*>(&crc32), data.data(), data.size());
+		return crc32;
+	}
+	virtual BinaryArray to(const BinaryArray& data){
+		BinaryArray result(32/8);
+		hasher.CalculateDigest(result.data(), data.data(), data.size());
+		return result;
+	}
 };
 
 } /* namespace crypto */

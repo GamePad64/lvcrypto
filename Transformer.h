@@ -14,28 +14,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-#include <cryptopp/eccrypto.h>
-#include <cryptopp/oids.h>
-#include <cryptopp/asn.h>
+#include "BinaryArray.h"
 
 namespace crypto {
 
-class ECDH {
-	struct KeyPair {
-		BinaryArray public_key;
-		BinaryArray private_key;
-	} key_pair;
-
-	CryptoPP::ECDH<CryptoPP::ECP>::Domain crypto_domain;
-	CryptoPP::AutoSeededRandomPool rng;
+class OneWayTransformer {
 public:
-	ECDH(CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(BinaryArray private_key, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	ECDH(KeyPair key_pair, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	virtual ~ECDH();
+	virtual ~OneWayTransformer() {}
 
-	KeyPair get_KeyPair() const {return key_pair;}
-	BinaryArray agree(const BinaryArray& other_public_key);
+	virtual BinaryArray to(const BinaryArray& data){return BinaryArray();};
+};
+
+class TwoWayTransformer : public OneWayTransformer {
+public:
+	virtual ~TwoWayTransformer() {}
+
+	virtual BinaryArray to(const BinaryArray& data){return BinaryArray();};
+	virtual BinaryArray from(const BinaryArray& data){return BinaryArray();};
+};
+
+class De : public TwoWayTransformer {
+	std::unique_ptr<TwoWayTransformer> nested;
+public:
+	De(TwoWayTransformer&& transformer){
+		nested = new TwoWayTransformer();
+		std::swap(*nested, transformer);
+	}
+
+	BinaryArray to(const BinaryArray& data){return nested->from(data);};
+	BinaryArray from(const BinaryArray& data){return nested->to(data);};
 };
 
 } /* namespace crypto */
