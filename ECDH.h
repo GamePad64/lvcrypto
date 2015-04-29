@@ -17,6 +17,8 @@
 #include <cryptopp/eccrypto.h>
 #include <cryptopp/oids.h>
 #include <cryptopp/asn.h>
+#include <cryptopp/osrng.h>
+#include "BinaryArray.h"
 
 namespace crypto {
 
@@ -32,7 +34,7 @@ public:
 	ECDH(CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
 	ECDH(BinaryArray private_key, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
 	ECDH(KeyPair key_pair, CryptoPP::OID curve = CryptoPP::ASN1::secp256r1());
-	virtual ~ECDH();
+	virtual ~ECDH(){};
 
 	KeyPair get_KeyPair() const {return key_pair;}
 	BinaryArray agree(const BinaryArray& other_public_key);

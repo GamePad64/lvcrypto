@@ -16,16 +16,17 @@
 #include "AES_CBC.h"
 #include <cryptopp/aes.h>
 #include <cryptopp/ccm.h>
+#include <cryptopp/filters.h>
 
 namespace crypto {
 
 BinaryArray AES_CBC::encrypt(const BinaryArray& plaintext) const {
-	CryptoPP::CBC_Mode<CryptoPP::AES>::Encryption filter(key, key.size(), iv.data());
+	CryptoPP::CBC_Mode<CryptoPP::AES>::Encryption filter(key.data(), key.size(), iv.data());
 
-	std::vector<uint8_t> ciphertext(plaintext.size() + padding ? iv.size()-(plaintext.size() % iv.size()) : 0);
+	std::string ciphertext;
 	CryptoPP::StringSource str_source(plaintext, true,
 			new CryptoPP::StreamTransformationFilter(filter,
-					new CryptoPP::ArraySink(ciphertext.data(), ciphertext.size()),
+					new CryptoPP::StringSink(ciphertext),
 					padding ? CryptoPP::StreamTransformationFilter::PKCS_PADDING : CryptoPP::StreamTransformationFilter::NO_PADDING
 			)
 	);
@@ -34,7 +35,7 @@ BinaryArray AES_CBC::encrypt(const BinaryArray& plaintext) const {
 }
 
 BinaryArray AES_CBC::decrypt(const BinaryArray& ciphertext) const {
-	CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption filter(key, key.size(), iv.data());
+	CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption filter(key.data(), key.size(), iv.data());
 
 	std::string plaintext;
 	CryptoPP::StringSource(ciphertext, true,

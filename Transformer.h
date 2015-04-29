@@ -15,6 +15,7 @@
  */
 #pragma once
 #include "BinaryArray.h"
+#include <memory>
 
 namespace crypto {
 
