@@ -21,7 +21,7 @@ namespace crypto {
 
 class Hex : public TwoWayTransformer {
 public:
-	BinaryArray to(const BinaryArray& data) {
+	BinaryArray to(const BinaryArray& data) const {
 		std::string transformed;
 		CryptoPP::StringSource(data, true,
 				new CryptoPP::HexEncoder(
@@ -32,7 +32,7 @@ public:
 		return transformed;
 	}
 
-	BinaryArray from(const BinaryArray& data) {
+	BinaryArray from(const BinaryArray& data) const {
 		std::string transformed;
 		CryptoPP::StringSource(data, true,
 				new CryptoPP::HexDecoder(

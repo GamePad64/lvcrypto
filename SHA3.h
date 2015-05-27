@@ -21,18 +21,18 @@ namespace crypto {
 
 class SHA3 : public OneWayTransformer {
 	const size_t size;
-	CryptoPP::SHA3 hasher;
+	mutable CryptoPP::SHA3 hasher;
 public:
 	SHA3(size_t size) : size(size), hasher(size) {}
 	virtual ~SHA3() {}
 
-	BinaryArray compute(const BinaryArray& data){
-		BinaryArray result(32/8);
+	BinaryArray compute(const BinaryArray& data) const {
+		BinaryArray result(hasher.DigestSize());
 		hasher.CalculateDigest(result.data(), data.data(), data.size());
 		return result;
 	}
-	BinaryArray to(const BinaryArray& data){
-		BinaryArray result(32/8);
+	BinaryArray to(const BinaryArray& data) const {
+		BinaryArray result(hasher.DigestSize());
 		hasher.CalculateDigest(result.data(), data.data(), data.size());
 		return result;
 	}

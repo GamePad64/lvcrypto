@@ -66,8 +66,11 @@ public:
 		return *this;
 	}
 
-	bool operator ==(const BinaryArray& value) const{
+	bool operator ==(const BinaryArray& value) const {
 		return internal_value == value.internal_value;
+	}
+	bool operator <(const BinaryArray& value) const {
+		return internal_value < value.internal_value;
 	}
 
 	operator bool(){

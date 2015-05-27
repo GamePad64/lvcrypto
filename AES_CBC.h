@@ -30,8 +30,8 @@ public:
 	BinaryArray encrypt(const BinaryArray& plaintext) const;
 	BinaryArray decrypt(const BinaryArray& ciphertext) const;
 
-	virtual BinaryArray to(const BinaryArray& data){return encrypt(data);}
-	virtual BinaryArray from(const BinaryArray& data){return decrypt(data);}
+	virtual BinaryArray to(const BinaryArray& data) const {return encrypt(data);}
+	virtual BinaryArray from(const BinaryArray& data) const {return decrypt(data);}
 };
 
 } /* namespace crypto */

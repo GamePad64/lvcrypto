@@ -20,15 +20,16 @@
 namespace crypto {
 
 class Base58 : public TwoWayTransformer {
-	const char bitcoin_alphabet[58] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-	const char ripple_alphabet[58] = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
-	const char flickr_alphabet[58] = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
+public:
+	static const char bitcoin_alphabet[58] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+	static const char ripple_alphabet[58] = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
+	static const char flickr_alphabet[58] = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
 
+private:
 	std::string current_alphabet;
-
 public:
 	Base58(std::string alphabet = bitcoin_alphabet) : current_alphabet(std::move(alphabet)) {};
-	BinaryArray to(const BinaryArray& data) {
+	BinaryArray to(const BinaryArray& data) const {
 		CryptoPP::Integer big_data(data.data(), data.size());
 
 		std::string result;
@@ -50,7 +51,7 @@ public:
 		return result;
 	}
 
-	BinaryArray from(const BinaryArray& data) {
+	BinaryArray from(const BinaryArray& data) const {
 		CryptoPP::Integer big_data = 0;
 		CryptoPP::Integer multi = 1;
 

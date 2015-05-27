@@ -21,7 +21,7 @@ namespace crypto {
 
 class Base64 : public TwoWayTransformer {
 public:
-	BinaryArray to(const BinaryArray& data) {
+	BinaryArray to(const BinaryArray& data) const {
 		std::string transformed;
 		CryptoPP::StringSource(data, true,
 				new CryptoPP::Base64Encoder(
@@ -32,7 +32,7 @@ public:
 		return transformed;
 	}
 
-	BinaryArray from(const BinaryArray& data) {
+	BinaryArray from(const BinaryArray& data) const {
 		std::string transformed;
 		CryptoPP::StringSource(data, true,
 				new CryptoPP::Base64Decoder(

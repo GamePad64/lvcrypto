@@ -23,15 +23,15 @@ class OneWayTransformer {
 public:
 	virtual ~OneWayTransformer() {}
 
-	virtual BinaryArray to(const BinaryArray& data){return BinaryArray();};
+	virtual BinaryArray to(const BinaryArray& data) const {return BinaryArray();};
 };
 
 class TwoWayTransformer : public OneWayTransformer {
 public:
 	virtual ~TwoWayTransformer() {}
 
-	virtual BinaryArray to(const BinaryArray& data){return BinaryArray();};
-	virtual BinaryArray from(const BinaryArray& data){return BinaryArray();};
+	virtual BinaryArray to(const BinaryArray& data) const {return BinaryArray();};
+	virtual BinaryArray from(const BinaryArray& data) const {return BinaryArray();};
 };
 
 class De : public TwoWayTransformer {
@@ -42,8 +42,8 @@ public:
 		std::swap(*nested, transformer);
 	}
 
-	BinaryArray to(const BinaryArray& data){return nested->from(data);};
-	BinaryArray from(const BinaryArray& data){return nested->to(data);};
+	BinaryArray to(const BinaryArray& data) const {return nested->from(data);};
+	BinaryArray from(const BinaryArray& data) const {return nested->to(data);};
 };
 
 } /* namespace crypto */
