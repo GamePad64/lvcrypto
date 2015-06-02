@@ -20,15 +20,27 @@
 
 namespace crypto {
 
+/**
+ * This transformation is not really HMAC, as HMAC(Keccak) is not supported by CryptoPP.
+ * As described on http://keccak.noekeon.org/ (than's Keccak creators' site):
+ *
+ *   Unlike SHA-1 and SHA-2, Keccak does not have the length-extension weakness,
+ *   hence does not need the HMAC nested construction. Instead, MAC computation
+ *   can be performed by simply prepending the message with the key.
+ *
+ * Okay, this solution is implemented here. Just prepending key to message.
+ */
 class HMAC_SHA3_224 : public OneWayTransformer {
-	mutable CryptoPP::HMAC<CryptoPP::SHA3_224> hasher;
+	const std::string key;
+	mutable CryptoPP::SHA3_224 hasher;
 public:
-	HMAC_SHA3_224(BinaryArray key) : hasher(key.data(), key.size()) {}
+	HMAC_SHA3_224(BinaryArray key) : key(key) {}
 	virtual ~HMAC_SHA3_224() {}
 
 	BinaryArray compute(const BinaryArray& data) const {
+		std::string result_data = key + std::string(data);
 		BinaryArray result(hasher.DigestSize());
-		hasher.CalculateDigest(result.data(), data.data(), data.size());
+		hasher.CalculateDigest(result.data(), (uint8_t*)result_data.data(), result_data.size());
 		return result;
 	}
 	BinaryArray to(const BinaryArray& data) const {

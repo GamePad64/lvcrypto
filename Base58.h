@@ -21,9 +21,9 @@ namespace crypto {
 
 class Base58 : public TwoWayTransformer {
 public:
-	static const char bitcoin_alphabet[58] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-	static const char ripple_alphabet[58] = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
-	static const char flickr_alphabet[58] = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
+	static char bitcoin_alphabet[59];
+	static char ripple_alphabet[59];
+	static char flickr_alphabet[59];
 
 private:
 	std::string current_alphabet;
