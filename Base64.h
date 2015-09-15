@@ -25,7 +25,7 @@ public:
 		std::string transformed;
 		CryptoPP::StringSource(data, true,
 				new CryptoPP::Base64Encoder(
-						new CryptoPP::StringSink(transformed)
+						new CryptoPP::StringSink(transformed), false
 				)
 		);
 
