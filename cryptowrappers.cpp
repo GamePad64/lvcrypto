@@ -109,13 +109,4 @@ StrongHash compute_shash(const uint8_t* data, size_t size) {
 	return hash;
 }
 
-StrongHash compute_hmac(const uint8_t* data, size_t size, Key key){
-	CryptoPP::HMAC<CryptoPP::SHA3_224> hmacer(key.data(), key.size());
-
-	std::array<uint8_t, SHASH_LENGTH> hmac;
-	hmacer.CalculateDigest(hmac.data(), data, size);
-
-	return hmac;
-}
-
 } /* namespace crypto */
