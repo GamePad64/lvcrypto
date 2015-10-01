@@ -29,7 +29,7 @@ private:
 	std::string current_alphabet;
 public:
 	Base58(std::string alphabet = bitcoin_alphabet) : current_alphabet(std::move(alphabet)) {};
-	BinaryArray to(const BinaryArray& data) const {
+	blob to(const blob& data) const {
 		CryptoPP::Integer big_data(data.data(), data.size());
 
 		std::string result;
@@ -48,10 +48,10 @@ public:
 		}
 
 		std::reverse(result.begin(), result.end());
-		return result;
+		return blob(result.begin(), result.end());
 	}
 
-	BinaryArray from(const BinaryArray& data) const {
+	blob from(const blob& data) const {
 		CryptoPP::Integer big_data = 0;
 		CryptoPP::Integer multi = 1;
 

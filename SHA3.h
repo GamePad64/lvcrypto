@@ -26,13 +26,13 @@ public:
 	SHA3(size_t size) : size(size), hasher(size) {}
 	virtual ~SHA3() {}
 
-	BinaryArray compute(const BinaryArray& data) const {
-		BinaryArray result(hasher.DigestSize());
+	blob compute(const blob& data) const {
+		blob result(hasher.DigestSize());
 		hasher.CalculateDigest(result.data(), data.data(), data.size());
 		return result;
 	}
-	BinaryArray to(const BinaryArray& data) const {
-		BinaryArray result(hasher.DigestSize());
+	blob to(const blob& data) const {
+		blob result(hasher.DigestSize());
 		hasher.CalculateDigest(result.data(), data.data(), data.size());
 		return result;
 	}

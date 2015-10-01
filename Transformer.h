@@ -14,36 +14,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-#include "BinaryArray.h"
-#include <memory>
+#include <vector>
+#include <cstdint>
 
 namespace crypto {
+
+using blob = std::vector<uint8_t>;
 
 class OneWayTransformer {
 public:
 	virtual ~OneWayTransformer() {}
 
-	virtual BinaryArray to(const BinaryArray& data) const {return BinaryArray();};
+	virtual blob to(const blob& data) const = 0;
 };
 
 class TwoWayTransformer : public OneWayTransformer {
 public:
 	virtual ~TwoWayTransformer() {}
 
-	virtual BinaryArray to(const BinaryArray& data) const {return BinaryArray();};
-	virtual BinaryArray from(const BinaryArray& data) const {return BinaryArray();};
+	virtual blob to(const blob& data) const = 0;
+	virtual blob from(const blob& data) const = 0;
 };
 
-class De : public TwoWayTransformer {
-	std::unique_ptr<TwoWayTransformer> nested;
-public:
-	De(TwoWayTransformer& transformer){
-		nested = std::unique_ptr<TwoWayTransformer>(new TwoWayTransformer());
-		std::swap(*nested, transformer);
-	}
+inline blob operator|(const blob& data, OneWayTransformer &&transformer){
+	return transformer.to(data);
+}
 
-	BinaryArray to(const BinaryArray& data) const {return nested->from(data);};
-	BinaryArray from(const BinaryArray& data) const {return nested->to(data);};
-};
+template <class Container>
+inline blob operator|(const Container& data, OneWayTransformer &&transformer){
+	return transformer.to(blob(data.begin(), data.end()));
+}
 
 } /* namespace crypto */

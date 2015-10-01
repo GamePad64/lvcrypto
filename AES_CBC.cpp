@@ -20,32 +20,32 @@
 
 namespace crypto {
 
-BinaryArray AES_CBC::encrypt(const BinaryArray& plaintext) const {
+blob AES_CBC::encrypt(const blob& plaintext) const {
 	CryptoPP::CBC_Mode<CryptoPP::AES>::Encryption filter(key.data(), key.size(), iv.data());
 
 	std::string ciphertext;
-	CryptoPP::StringSource str_source(plaintext, true,
+	CryptoPP::StringSource str_source(plaintext.data(), plaintext.size(), true,
 			new CryptoPP::StreamTransformationFilter(filter,
 					new CryptoPP::StringSink(ciphertext),
 					padding ? CryptoPP::StreamTransformationFilter::PKCS_PADDING : CryptoPP::StreamTransformationFilter::NO_PADDING
 			)
 	);
 
-	return ciphertext;
+	return blob(ciphertext.begin(), ciphertext.end());
 }
 
-BinaryArray AES_CBC::decrypt(const BinaryArray& ciphertext) const {
+blob AES_CBC::decrypt(const blob& ciphertext) const {
 	CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption filter(key.data(), key.size(), iv.data());
 
 	std::string plaintext;
-	CryptoPP::StringSource(ciphertext, true,
+	CryptoPP::StringSource(ciphertext.data(), ciphertext.size(), true,
 			new CryptoPP::StreamTransformationFilter(filter,
 					new CryptoPP::StringSink(plaintext),
 					padding ? CryptoPP::StreamTransformationFilter::PKCS_PADDING : CryptoPP::StreamTransformationFilter::NO_PADDING
 			)
 	);
 
-	return plaintext;
+	return blob(plaintext.begin(), plaintext.end());
 }
 
 } /* namespace crypto */

@@ -20,18 +20,18 @@ namespace crypto {
 
 class AES_CBC : public TwoWayTransformer {
 private:
-	BinaryArray key;
-	BinaryArray iv;
+	const blob& key;
+	const blob& iv;
 	bool padding;
 public:
-	AES_CBC(BinaryArray key, BinaryArray iv, bool padding = true) : key(std::move(key)), iv(std::move(iv)), padding(padding) {}
+	AES_CBC(const blob& key, const blob& iv, bool padding = true) : key(key), iv(iv), padding(padding) {}
 	virtual ~AES_CBC() {};
 
-	BinaryArray encrypt(const BinaryArray& plaintext) const;
-	BinaryArray decrypt(const BinaryArray& ciphertext) const;
+	blob encrypt(const blob& plaintext) const;
+	blob decrypt(const blob& ciphertext) const;
 
-	virtual BinaryArray to(const BinaryArray& data) const {return encrypt(data);}
-	virtual BinaryArray from(const BinaryArray& data) const {return decrypt(data);}
+	virtual blob to(const blob& data) const {return encrypt(data);}
+	virtual blob from(const blob& data) const {return decrypt(data);}
 };
 
 } /* namespace crypto */

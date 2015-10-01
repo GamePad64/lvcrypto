@@ -21,26 +21,26 @@ namespace crypto {
 
 class Base64 : public TwoWayTransformer {
 public:
-	BinaryArray to(const BinaryArray& data) const {
+	blob to(const blob& data) const {
 		std::string transformed;
-		CryptoPP::StringSource(data, true,
+		CryptoPP::StringSource(data.data(), data.size(), true,
 				new CryptoPP::Base64Encoder(
 						new CryptoPP::StringSink(transformed), false
 				)
 		);
 
-		return transformed;
+		return blob(transformed.begin(), transformed.end());
 	}
 
-	BinaryArray from(const BinaryArray& data) const {
+	blob from(const blob& data) const {
 		std::string transformed;
-		CryptoPP::StringSource(data, true,
+		CryptoPP::StringSource(data.data(), data.size(), true,
 				new CryptoPP::Base64Decoder(
 						new CryptoPP::StringSink(transformed)
 				)
 		);
 
-		return transformed;
+		return blob(transformed.begin(), transformed.end());
 	}
 };
 
