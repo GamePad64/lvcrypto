@@ -23,7 +23,7 @@ class SHA3 : public OneWayTransformer {
 	const size_t size;
 	mutable CryptoPP::SHA3 hasher;
 public:
-	SHA3(size_t size) : size(size), hasher(size) {}
+	SHA3(size_t size) : size(size), hasher(size/8) {}
 	virtual ~SHA3() {}
 
 	blob compute(const blob& data) const {
