@@ -27,9 +27,28 @@ public:
 	virtual ~OneWayTransformer() {}
 
 	virtual blob to(const blob& data) const = 0;
+
 	template <class InputIterator>
 	blob to(InputIterator first, InputIterator last) const {
 		return to(blob(first, last));
+	}
+	template <class Container>
+	blob to(const Container& data) const {
+		return to(data.begin(), data.end());
+	}
+
+	virtual std::string to_string(const blob& data) const {
+		blob result = to(data);
+		return std::string(std::make_move_iterator(result.begin()), std::make_move_iterator(result.end()));
+	}
+	template <class InputIterator>
+	std::string to_string(InputIterator first, InputIterator last) const {
+		blob result = to(first, last);
+		return std::string(std::make_move_iterator(result.begin()), std::make_move_iterator(result.end()));
+	}
+	template <class Container>
+	std::string to_string(const Container& data) const {
+		return to_string(data.begin(), data.end());
 	}
 };
 
@@ -39,16 +58,27 @@ public:
 
 	virtual blob to(const blob& data) const = 0;
 	virtual blob from(const blob& data) const = 0;
-};
-/*
-class De : public TwoWayTransformer {
-	std::unique_ptr<TwoWayTransformer> nested;
-public:
-	De(TwoWayTransformer&& transformer) : nested(&(std::move(transformer))) {}
 
-	blob to(const blob& data) const {return nested->from(data);};
-	blob from(const blob& data) const {return nested->to(data);};
-};*/
+	template <class InputIterator>
+	blob from(InputIterator first, InputIterator last) const {
+		return from(blob(first, last));
+	}
+	template <class Container>
+	blob from(const Container& data) const {
+		return from(data.begin(), data.end());
+	}
+};
+
+template<class Trans>
+class De : public TwoWayTransformer {
+	Trans nested;
+public:
+	template<class...Args>
+	De(Args... trans_args) : nested(trans_args...) {}
+
+	blob to(const blob& data) const {return nested.from(data);};
+	blob from(const blob& data) const {return nested.to(data);};
+};
 
 inline blob operator|(const blob& data, OneWayTransformer&& transformer) {
 	return transformer.to(data);
