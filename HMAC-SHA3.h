@@ -31,18 +31,18 @@ namespace crypto {
  * Okay, this solution is implemented here. Just prepending key to message.
  */
 class HMAC_SHA3_224 : public OneWayTransformer {
-	const std::string key;
-	mutable CryptoPP::SHA3_224 hasher;
+	const blob key_;
+	mutable CryptoPP::SHA3_224 hasher_;
 public:
-	HMAC_SHA3_224(blob key) : key(key.begin(), blob.end()) {}
+	HMAC_SHA3_224(blob key) : key_(key) {}
 	virtual ~HMAC_SHA3_224() {}
 
 	blob compute(const blob& data) const {
-		blob result(hasher.DigestSize());
+		blob result(hasher_.DigestSize());
 
-		hasher.Update((const uint8_t*)key.data(), key.size());
-		hasher.Update(data.data(), data.size());
-		hasher.Final(result.data());
+		hasher_.Update((const uint8_t*)key_.data(), key_.size());
+		hasher_.Update(data.data(), data.size());
+		hasher_.Final(result.data());
 
 		return result;
 	}
