@@ -29,7 +29,7 @@ public:
 				)
 		);
 
-		return blob(transformed.begin(), transformed.end());
+		return blob(std::make_move_iterator(transformed.begin()), std::make_move_iterator(transformed.end()));
 	}
 
 	blob from(const blob& data) const {
@@ -40,7 +40,7 @@ public:
 				)
 		);
 
-		return blob(transformed.begin(), transformed.end());
+		return blob(std::make_move_iterator(transformed.begin()), std::make_move_iterator(transformed.end()));
 	}
 };
 

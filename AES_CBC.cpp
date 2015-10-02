@@ -24,14 +24,14 @@ blob AES_CBC::encrypt(const blob& plaintext) const {
 	CryptoPP::CBC_Mode<CryptoPP::AES>::Encryption filter(key.data(), key.size(), iv.data());
 
 	std::string ciphertext;
-	CryptoPP::StringSource str_source(plaintext.data(), plaintext.size(), true,
+	CryptoPP::StringSource(plaintext.data(), plaintext.size(), true,
 			new CryptoPP::StreamTransformationFilter(filter,
 					new CryptoPP::StringSink(ciphertext),
 					padding ? CryptoPP::StreamTransformationFilter::PKCS_PADDING : CryptoPP::StreamTransformationFilter::NO_PADDING
 			)
 	);
 
-	return blob(ciphertext.begin(), ciphertext.end());
+	return blob(std::make_move_iterator(ciphertext.begin()), std::make_move_iterator(ciphertext.end()));
 }
 
 blob AES_CBC::decrypt(const blob& ciphertext) const {
@@ -45,7 +45,7 @@ blob AES_CBC::decrypt(const blob& ciphertext) const {
 			)
 	);
 
-	return blob(plaintext.begin(), plaintext.end());
+	return blob(std::make_move_iterator(plaintext.begin()), std::make_move_iterator(plaintext.end()));
 }
 
 } /* namespace crypto */

@@ -32,9 +32,7 @@ public:
 		return result;
 	}
 	blob to(const blob& data) const {
-		blob result(hasher.DigestSize());
-		hasher.CalculateDigest(result.data(), data.data(), data.size());
-		return result;
+		return compute(data);
 	}
 };
 

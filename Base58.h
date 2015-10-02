@@ -48,7 +48,7 @@ public:
 		}
 
 		std::reverse(result.begin(), result.end());
-		return blob(result.begin(), result.end());
+		return blob(std::make_move_iterator(result.begin()), std::make_move_iterator(result.end()));
 	}
 
 	blob from(const blob& data) const {

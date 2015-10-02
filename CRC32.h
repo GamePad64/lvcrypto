@@ -22,18 +22,18 @@
 namespace crypto {
 
 class CRC32 : public OneWayTransformer {
-	mutable CryptoPP::CRC32 hasher_;
+	mutable CryptoPP::CRC32 hasher;
 public:
 	virtual ~CRC32() {}
 
 	uint32_t compute(const blob& data) const {
 		uint32_t crc32;
-		hasher_.CalculateDigest(reinterpret_cast<uint8_t*>(&crc32), data.data(), data.size());
+		hasher.CalculateDigest(reinterpret_cast<uint8_t*>(&crc32), data.data(), data.size());
 		return crc32;
 	}
 	virtual blob to(const blob& data) const {
 		blob result(32/8);
-		hasher_.CalculateDigest(result.data(), data.data(), data.size());
+		hasher.CalculateDigest(result.data(), data.data(), data.size());
 		return result;
 	}
 };
