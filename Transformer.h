@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
+#include <memory>
 #include <vector>
 #include <cstdint>
 
@@ -26,6 +27,10 @@ public:
 	virtual ~OneWayTransformer() {}
 
 	virtual blob to(const blob& data) const = 0;
+	template <class InputIterator>
+	blob to(InputIterator first, InputIterator last) const {
+		return to(blob(first, last));
+	}
 };
 
 class TwoWayTransformer : public OneWayTransformer {
@@ -35,14 +40,23 @@ public:
 	virtual blob to(const blob& data) const = 0;
 	virtual blob from(const blob& data) const = 0;
 };
+/*
+class De : public TwoWayTransformer {
+	std::unique_ptr<TwoWayTransformer> nested;
+public:
+	De(TwoWayTransformer&& transformer) : nested(&(std::move(transformer))) {}
 
-inline blob operator|(const blob& data, OneWayTransformer &&transformer){
+	blob to(const blob& data) const {return nested->from(data);};
+	blob from(const blob& data) const {return nested->to(data);};
+};*/
+
+inline blob operator|(const blob& data, OneWayTransformer&& transformer) {
 	return transformer.to(data);
 }
 
 template <class Container>
-inline blob operator|(const Container& data, OneWayTransformer &&transformer){
-	return transformer.to(blob(data.begin(), data.end()));
+inline blob operator|(const Container& data, OneWayTransformer&& transformer) {
+	return transformer.to(data.begin(), data.end());
 }
 
 } /* namespace crypto */
