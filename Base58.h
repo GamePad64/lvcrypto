@@ -14,16 +14,17 @@
 
 namespace crypto {
 
-class Base58 : public TwoWayTransformer {
-public:
-	static char bitcoin_alphabet[59];
-	static char ripple_alphabet[59];
-	static char flickr_alphabet[59];
+namespace Base58_alphabets {
+static std::string bitcoin_alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+static std::string ripple_alphabet = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
+static std::string flickr_alphabet = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
+}
 
+class Base58 : public TwoWayTransformer {
 private:
-	std::string current_alphabet;
+	const std::string& current_alphabet;
 public:
-	Base58(std::string alphabet = bitcoin_alphabet) : current_alphabet(std::move(alphabet)) {};
+	Base58(const std::string& alphabet = Base58_alphabets::bitcoin_alphabet) : current_alphabet(alphabet) {};
 	blob to(const blob& data) const {
 		CryptoPP::Integer big_data(data.data(), data.size());
 
